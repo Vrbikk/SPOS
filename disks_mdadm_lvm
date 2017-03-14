@@ -1,0 +1,62 @@
+Zobrazení všech disků, oddílů, velikostí i mountpointů:
+#lsblk
+
+Konkrétnější údaje o disku:
+#fdisk -l /dev/sde
+#tune2fs -l /dev/sdb1 (údaje o oddílu super podrobné)
+
+Právě mountnuté oddíly, obsazenost a jejich FS:
+#df -h -T
+
+Smazání obsahu celého disku včetně dat i oddílů (tzv. "přesmahnutí" nulama), lze přidat count=1 (smaže jen GPT/MBR na začátku):
+#dd if=/dev/zero of=/dev/sdX bs=10M count=1 (oddíly disku je třeba mít odmountované)
+
+Pro vytvoření GPT a různé typy oddílů na disku je vhodné použít grafický nástroj:
+#cfdisk /dev/sdf
+
+Formátování oddílu disku souborovým systémem (pro XFS #apt install xfsprogs):
+#mkfs.ext4 /dev/sde1
+
+Mountování a umountování oddílu:
+#mount /dev/sde1 /mnt/xfs
+#umount /dev/sde1
+
+Přidání automatického mountování do /etc/fstab (místo uuid lze použít klasické /dev/sde1):
+#blkid /dev/sde1 (pro získání uuid)
+UUID="9365efee-8bc9-45a9-8687-76b451e2695b" /mnt/xfs xfs defaults 0 0
+#mount -a (namountuju všechny FS v souboru /etc/fstab)
+
+(?) Pro změnu velikosti oddílu:
+#umount /dev/sde1
+#e2fsck /dev/sde1 (kontrola oddílu pro ext4)
+#cfdisk /dev/sde (smazat oddíl sde1 a udělat větší)
+#xfs_growfs /dev/sde1 (musí mít mountnuto narozdíl od resize2fs)
+
+MDADM vytvoření raid1 na dvou celých discích:
+#apt install mdadm
+#cfdisk /dev/sde (/dev/sdf nastavit GPT a oddíly přes celý disk - lze i bez GPT)
+#mdadm --create /dev/md1 --level=1 --raid-devices=2 /dev/sde1 /dev/sdf1
+#cat /proc/mdstat
+#mkfs.ext4 /dev/md1
+#mount /dev/md1 /mnt/md1
+
+Vytvoření LVM nad md1:
+#apt install lvm2
+#umount /dev/md1
+#pvcreate /dev/md1 (vytvoření "fyzického" disku)
+#pvdisplay (informace o oddílech)
+#vgcreate data /dev/md1 (vytvoření skupiny oddílů jménem "data" obsahující disk /dev/md1)
+#vgdisplay (informace o skupinách)
+#lvcreate -L 100M -n owncloud data (vytvoření 100MB logického svazku s názvem owncloud ve skupině data)
+#mkfs.ext4 /dev/data/owncloud (formátování oddílu)
+#mount /dev/data/owncloud /mnt/owncloud/
+
+
+
+
+
+
+
+
+
+
