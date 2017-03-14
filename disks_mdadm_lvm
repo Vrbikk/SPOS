@@ -48,6 +48,7 @@ Vytvoření LVM nad md1:
 #vgcreate data /dev/md1 (vytvoření skupiny oddílů jménem "data" obsahující disk /dev/md1)
 #vgdisplay (informace o skupinách)
 #lvcreate -L 100M -n owncloud data (vytvoření 100MB logického svazku s názvem owncloud ve skupině data)
+#lvdisplay
 #mkfs.ext4 /dev/data/owncloud (formátování oddílu)
 #mount /dev/data/owncloud /mnt/owncloud/
 
