@@ -1,0 +1,6 @@
+Vygenerování RSA 2048 klíče k přístupu na SSH bez hesla (vygenerujeme na klientské straně):
+#ssh-keygen -t rsa
+$HOME/.ssh/id_rsa (privátní klíč)
+$HOME/.ssh/id_rsa.pub (veřejný klíč)
+#ssh-copy-id root@server.domain (automatické přidání veřejného klíče na server d osouboru ~/.ssh/authorized_keys)
+
