@@ -1,0 +1,6 @@
+/etc/hostname - název serveru
+/etc/resolv.conf - seznam DNS serverů
+/etc/hosts - statické nastavení ip adres a doménových jmen
+#host -t ANY zcu.cz (všechny záznamy o doméně zcu.cz)
+
+
