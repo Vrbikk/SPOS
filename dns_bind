@@ -1,6 +1,48 @@
-/etc/hostname - název serveru
-/etc/resolv.conf - seznam DNS serverů
-/etc/hosts - statické nastavení ip adres a doménových jmen
+/etc/hostname - název serveru ("spos-name")
+/etc/resolv.conf - seznam DNS serverů (127.0.0.1 a nějaký veřejný 8.8.8.8)
+/etc/hosts - musí kromě localhostu obsahovat "147.228.67.xx spos-name.spos spos-name"
 #host -t ANY zcu.cz (všechny záznamy o doméně zcu.cz)
+#apt-get install bind9 dnsutils
+
+Dále upravujeme soubor "/etc/bind/named.conf.local":
+
+zone "spos-name.spos"{
+        type master;
+        file "/etc/bind/zones/db.spos-name.spos";
+        allow-transfer {147.228.67.0/24;};
+};
+
+zone "spos-fjani.spos"{
+        type slave;
+        file "/etc/bind/slaves/db.spos-name2.spos";
+        masters {147.228.67.xx2;};
+};
+
+Vytvoříme složku "/zones" a "/slaves", do zones nakopírujeme:
+#mkdir /etc/bind/zones ; mkdir /etc/bind/slaves ; cp /etc/bind/db.local  /etc/bind/zones/db.spos-name.spos
+
+Editujeme "/etc/bind/zones/db.spos-name.spos":
+
+$TTL    604800
+@       IN      SOA     spos-avrba.spos. admin.spos-avrba.spos (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+
+@       IN      NS      localhost.
+@       IN      A       147.228.67.xx
+@       IN      AAAA    ::1
+
+debian2 IN      A       147.228.67.xx
+synology        IN      A       147.228.67.yy
+gw      IN      A      147.228.67.zz
+
+;alias pro webový server, který běží na stejném železe
+www     IN      CNAME   debian2
+
+
 
 
