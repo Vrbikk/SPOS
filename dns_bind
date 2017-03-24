@@ -1,8 +1,14 @@
 /etc/hostname - název serveru ("spos-name")
-/etc/resolv.conf - seznam DNS serverů (127.0.0.1 a nějaký veřejný 8.8.8.8)
+/etc/resolv.conf - seznam DNS serverů (127.0.0.1)
 /etc/hosts - musí kromě localhostu obsahovat "147.228.67.xx spos-name.spos spos-name"
 #host -t ANY zcu.cz (všechny záznamy o doméně zcu.cz)
 #apt-get install bind9 dnsutils
+
+Do "/etc/bind/named.conf.options" přidáme servery pro ostatní resolvy:
+forwarders {
+                8.8.8.8;
+                8.8.4.4;
+                };
 
 Dále upravujeme soubor "/etc/bind/named.conf.local":
 
@@ -46,6 +52,16 @@ www     IN      CNAME   debian2
 
 Pro kontrolu konfigurace bind:
 #named-checkconf (pokud nevrátí žádný výstup je konfigurace validní)
+#service bind9 restart
+
+Po přidání virtuální adresy např 192.168.0.xx lze udělat privátní a veřejný pohled, v "/etc/bind/named.conf.local" definujeme
+dva access listy:
+
+acl "local" {192.168.0.0/24; localhost;};
+acl "public" {147.228.67.0/24;};
+
+???????? dopiče
+
 
 
 
