@@ -20,6 +20,7 @@ zone "spos-fjani.spos"{
 
 Vytvoříme složku "/zones" a "/slaves", do zones nakopírujeme:
 #mkdir /etc/bind/zones ; mkdir /etc/bind/slaves ; cp /etc/bind/db.local  /etc/bind/zones/db.spos-name.spos
+#chown -R bind /etc/bind/slaves
 
 Editujeme "/etc/bind/zones/db.spos-name.spos":
 
@@ -43,7 +44,8 @@ gw      IN      A      147.228.67.zz
 ;alias pro webový server, který běží na stejném železe
 www     IN      CNAME   debian2
 
-
+Pro kontrolu konfigurace bind:
+#named-checkconf (pokud nevrátí žádný výstup je konfigurace validní)
 
 
 
