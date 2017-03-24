@@ -1,3 +1,30 @@
+Nastavení statické ip adresy:
+
+/etc/network/interfaces
+##The primary network interface
+##iface eth0 inet dhcp
+allow-hotplug eth0   
+auto eth0
+iface eth0 inet static
+        address 10.0.0.5
+        netmask 255.255.255.0
+        gateway 10.0.0.1
+##Virtual ip        
+auto eth0:1
+allow-hotplug eth0:1
+iface eth0:1 inet static
+  address 192.168.1.248
+  netmask 255.255.255.0
+
+
+
+#service networking restart
+
+
+
+
+
+
 Vygenerování RSA 2048 klíče k přístupu na SSH bez hesla (vygenerujeme na klientské straně):
 #ssh-keygen -t rsa
 $HOME/.ssh/id_rsa (privátní klíč)
