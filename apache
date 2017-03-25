@@ -1,0 +1,55 @@
+#apt-get install apache2
+#apt-get install libapache2-mod-php5
+#service apache2 restart
+
+V souboru "/etc/php5/apache2/php.ini" nastavíme kvůli bezpečnosti pro všechny, ltze následně přepsat v <Directory "/path">
+u virtual hostu:
+open_basedir = /var/www/
+
+Přidání dalšího VH je v něm třeba nastavit name, directory a logovací soubory:
+#cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/host2.conf
+#a2ensite host2.conf
+#service apache2 reload
+
+Pro SSL je potřeba zapnout moduly:
+#a2enmod ssl
+#a2enmod headers
+
+Ve složce "/etc/apache2/" vytvoříme složku "ssl" a v něm certifikát:
+#openssl genrsa -des3 -out server.key 1024
+#openssl req -new -key server.key -out server.csr
+
+Odebereme nutnost zadat klíč při rebootování apache:
+#cp server.key server.key.org
+#openssl rsa -in server.key.org -out server.key
+#openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
+Vytvoříme nový VH "secure.conf":
+<VirtualHost *:80>
+    ServerName secure.spos-name.spos
+    Redirect permanent / https://secure.spos-name.spos/
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName secure.spos-name.spos
+    ##ServerAdmin webmaster@DOMAIN.TLD
+    DocumentRoot "/var/www/secure/"
+
+    SSLEngine on
+    SSLCertificateFile /etc/apache2/ssl/server.crt
+    SSLCertificateKeyFile /etc/apache2/ssl/server.key
+
+    ErrorLog /var/log/apache2/secure-error.log
+    CustomLog /var/log/apache2/secure-access.log common
+</VirtualHost>
+
+#a2ensite secure.conf
+#service apache2 restart
+
+
+
+
+
+
+
+
