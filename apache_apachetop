@@ -5,6 +5,9 @@
 V souboru "/etc/php5/apache2/php.ini" nastavíme kvůli bezpečnosti přístupu php:
 open_basedir = /var/www/
 
+Pokud nějaký VH potřebuje přístup k jiné složce, přidáme do VH.conf souboru:
+php_admin_value open_basedir /var/www/:/home/extrafolder/
+
 Ve stejném souboru zakážeme funkci phpinfo() tím, že přidáme do parametru:
 disable_functions = ...,phpinfo,
 
