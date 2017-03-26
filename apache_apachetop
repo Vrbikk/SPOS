@@ -45,6 +45,28 @@ Vytvoříme nový VH "secure.conf" s přidanými cestami k certifikátu:
 </VirtualHost>
 
 
+Instalace a použití apachetop:
+#apt install apachetop
+#apachetop -f /var/log/apache2/access.log (logovací soubor konkrétního VH)
+
+Vytvoření umělého provozu pomocí nástroje curl (./test http://spos-name.spos 0.001):
+#!/bin/bash
+get_page () {
+        echo "request "$2""
+        curl -k "$1" &>/dev/null
+}
+i=0
+while true
+do
+        ((i=i+1))
+        get_page $1 $i
+        sleep $2
+done
+
+
+
+
+
 
 
 
