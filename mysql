@@ -101,7 +101,11 @@ Použití nástroje mysqladmin (předpokládá vytvořený soubor ~/.my.cnf):
 #mysqladmin status
 #mysqladmin processlist
 
-Zálohování a opbnova pomocí nástroje mysqldump a mysqlrestore:
+Zálohování a obnova samotných databází pomocí nástroje mysqldump:
+#mysqldump --databases testdb > testdb.sql (jedna databáze)
+#mysqldump --all-databases > dump.sql (vše)
+#mysql < testdb.sql (obnova databáze)
+
 
 
 
