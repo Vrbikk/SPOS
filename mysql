@@ -58,7 +58,9 @@ mysql> GRANT ALL PRIVILEGES ON testdb.* TO 'user'@'10.0.0.%' IDENTIFIED BY 'user
   - pokud bude host samotné "%" znamená to - všechny ostatní
   - abychom udělali dalšího roota tak : GRANT ALL PRIVILEGES ON *.* TO 'anotherroot'@'%' IDENTIFIED BY 'anotherroot' WITH GRANT OPTION; 
   
-  
+Dodatečná firewall pravidla (pokud je bind nastaven na 0.0.0.0 a chceme omezit nějaký rozsah adres např. z virtuální ip):
+-A INPUT -s 192.168.0.0/24 -p tcp -m tcp --dport 3306 -j DROP
+
 
 
 
