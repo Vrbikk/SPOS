@@ -13,7 +13,7 @@ password=heslo
 host=127.0.0.1
 database=mysql
 
-Pak již stačí zavolat:
+Pak již stačí:
 #mysql
 
 Operace s DB a tabulkama:
@@ -35,6 +35,31 @@ mysql> delete from tabulka where id=1;
 Plnění dat cyklem:
 #apt install pwgen;
 #for i in {1..50}; do echo "insert into testdb.tabulka (name, email) values ("\""$(pwgen 10 1)"\"", "\""$(pwgen 10 1)"\"");" | mysql; done
+
+Přidání uživatele a jeho práv:
+mysql> CREATE USER 'user'@'localhost' IDENTIFIED BY 'userpassword';
+mysql> GRANT ALL PRIVILEGES ON testdb.* TO 'user'@'localhost'; (pokud localhost nahradíme % - přístup ze všech poslouchajících rozhraní)
+mysql> FLUSH PRIVILEGES;
+mysql> DROP USER 'user'@'localhost'; (smazání)
+mysql> select user(); (ukáže právě přihlášeného uživatele)
+
+Přístup uživatelů:
+mysql> SELECT User, Host FROM mysql.user; (zobrazí uživatele a odkud mohou přistupovat)
+mysql> show grants; (zobrazí práva přihlášeného uživatele)
+mysql> GRANT ALL PRIVILEGES ON testdb.* TO 'user'@'10.0.0.%' IDENTIFIED BY 'userpassword'; 
+  - přístup ze sítě 10.0.0.0/24
+  - každý uživatel tak musí mít extra účet vázaný na hosta a práva k DB
+  - lze tak nastavit, že z různých sítí bude mít různá práva
+  - pokud bude host samotné "%" znamená to - všechny ostatní
+  - abychom udělali dalšího roota tak : GRANT ALL PRIVILEGES ON *.* TO 'anotherroot'@'%' IDENTIFIED BY 'anotherroot' WITH GRANT OPTION; 
+
+
+
+
+
+
+
+
 
 
 
