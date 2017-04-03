@@ -9,6 +9,7 @@ Přihlásit do databáze "mysql" z 127.0.0.1 jako root lze takto (zvolení datab
 Změna portu a rozhraní naslouchání v souboru /etc/mysql/my.cnf v sekci [mysqld]:
 bind-address=0.0.0.0 (naslouchá na všech rozhraních - jednotlivá pravidla se pak nastavují pomocí GRANT v mysql)
 #service mysql restart;
+V případě změny portu je potřeba se připojovat navíc s: -P port
 
 Pro automatické přihlašování můžeme vyzvořit soubor ~/.my.cnf:
 [client]
@@ -56,9 +57,8 @@ mysql> GRANT ALL PRIVILEGES ON testdb.* TO 'user'@'10.0.0.%' IDENTIFIED BY 'user
   - lze tak nastavit, že z různých sítí bude mít různá práva
   - pokud bude host samotné "%" znamená to - všechny ostatní
   - abychom udělali dalšího roota tak : GRANT ALL PRIVILEGES ON *.* TO 'anotherroot'@'%' IDENTIFIED BY 'anotherroot' WITH GRANT OPTION; 
-
-
-
+  
+  
 
 
 
