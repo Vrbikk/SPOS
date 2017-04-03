@@ -61,6 +61,37 @@ mysql> GRANT ALL PRIVILEGES ON testdb.* TO 'user'@'10.0.0.%' IDENTIFIED BY 'user
 Dodatečná firewall pravidla (pokud je bind nastaven na 0.0.0.0 a chceme omezit nějaký rozsah adres např. z virtuální ip):
 -A INPUT -s 192.168.0.0/24 -p tcp -m tcp --dport 3306 -j DROP
 
+Připojení do DB přes modul mysqli "index.php":
+<?php
+$servername = "localhost";
+$username = "user";
+$password = "userpassword";
+$dbname = "testdb";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+    }
+
+    $sql = "SELECT id, name, email FROM tabulka";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        // output data of each row
+            while($row = $result->fetch_assoc()) {
+                    echo "id: " . $row["id"]. " - Name: " . $row["name"]. " - Email" . $row["email"]. "<br>";
+                        }
+     } else {
+        echo "0 results";
+        }
+
+$conn->close();
+?>
+
+
+
 
 
 
