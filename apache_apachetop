@@ -1,5 +1,6 @@
 #apt-get install apache2
 #apt-get install libapache2-mod-php5
+#apt-get install php5-mysql (obsahuje mysqli modul do php)
 #service apache2 restart
 
 V souboru "/etc/php5/apache2/php.ini" nastavíme kvůli bezpečnosti přístupu php:
