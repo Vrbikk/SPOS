@@ -92,6 +92,18 @@ if ($conn->connect_error) {
 $conn->close();
 ?>
 
+Zálohování databáze (VYPNUTÝ STAV) - co složka to databáze:
+rsync -rav /var/lib/mysql/ /backup/zaloha-mysql/
+
+Použití nástroje mysqladmin (předpokládá vytvořený soubor ~/.my.cnf):
+#mysqladmin -u root -p123456 password 'xyz123' (změna hesla roota)
+#mysqladmin ping (zda běží)
+#mysqladmin status
+#mysqladmin processlist
+
+Zálohování a opbnova pomocí nástroje mysqldump a mysqlrestore:
+
+
 
 
 
