@@ -16,14 +16,20 @@ iface eth0:1 inet static
   address 192.168.1.248
   netmask 255.255.255.0
 
-
-
 #service networking restart
 
+Přidání iptables pravidel:
+#iptables -L (vypíše aktivní pravidla)
+iptables -A INPUT -s 147.228.0.0/16 -p tcp -m tcp --dport 22 -j ACCEPT (povolí přístup z určité sítě)
+iptables -A INPUT -p tcp -m tcp --dport 22 -j DROP (zakáže vše ostatní)
 
+Po restartu se ovšem pravidla smažou, je potřeba je uložit a upravit /etc/network/interfaces:
+#iptables-save > /etc/iptables.conf
 
+iface eth0 inet static 
+        post-up /sbin/iptables-restore /etc/network/iptables.conf
 
-
+Každou úpravu ve firewallu je poté možné napsat do /etc/iptables.conf a restartovat síť
 
 Vygenerování RSA 2048 klíče k přístupu na SSH bez hesla (vygenerujeme na klientské straně):
 #ssh-keygen -t rsa
