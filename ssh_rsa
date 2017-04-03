@@ -23,13 +23,20 @@ Přidání iptables pravidel:
 iptables -A INPUT -s 147.228.0.0/16 -p tcp -m tcp --dport 22 -j ACCEPT (povolí přístup z určité sítě)
 iptables -A INPUT -p tcp -m tcp --dport 22 -j DROP (zakáže vše ostatní)
 
-Po restartu se ovšem pravidla smažou, je potřeba je uložit a upravit /etc/network/interfaces:
-#iptables-save > /etc/iptables.conf
+Po restartu se ovšem pravidla smažou, je potřeba je uložit a upravit /etc/network/interfaces + script:
+#iptables-save > /etc/network/iptables.conf
+
+
+#!/bin/bash
+#script pro načtení pravidel
+iptables-restore < /etc/network/iptables.conf
+
+#chmod u+x /etc/network/post-up-script.sh 
 
 iface eth0 inet static 
-        post-up /sbin/iptables-restore /etc/network/iptables.conf
+       post-up /etc/network/post-up-script.sh
 
-Každou úpravu ve firewallu je poté možné napsat do /etc/iptables.conf a restartovat síť
+Každou úpravu ve firewallu je poté možné napsat do /etc/network/iptables.conf a restartovat síť
 
 Vygenerování RSA 2048 klíče k přístupu na SSH bez hesla (vygenerujeme na klientské straně):
 #ssh-keygen -t rsa
