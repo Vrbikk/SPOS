@@ -40,6 +40,9 @@ MDADM vytvoření raid1 na dvou celých discích:
 #mkfs.ext4 /dev/md1
 #mount /dev/md1 /mnt/md1
 
+MDADM vytvoření degradovaného Raid 6 jen z 3 disků:
+mdadm --create /dev/md0 --level=raid6 --raid-devices=4 /dev/sda1 /dev/sdb1 /dev/sdc1 missing
+
 Vytvoření LVM nad md1:
 #apt install lvm2
 #umount /dev/md1
@@ -51,9 +54,10 @@ Vytvoření LVM nad md1:
 #lvdisplay
 #mkfs.ext4 /dev/data/owncloud (formátování oddílu)
 #mount /dev/data/owncloud /mnt/owncloud/
+#lvs (vypíše volume groups)
 
 Rozšíření skupiny "data" o virtuální disk ze souboru
-#fallocate -l 1024M virt0.img ; dd if=/dev/zero of virt0.img bs=1M count=1024 (vytvoříme prázdný soubor)
+#fallocate -l 1024M virt0.img ; dd if=/dev/zero of=virt0.img bs=1M count=1024 (vytvoříme prázdný soubor)
 #losetup /dev/loop0 virt0.img (nalinkujeme soubor jako blokové zařízení)
 #cfdisk /dev/loop0 (vytvoříme oddíl typu "Linux LVM")
 #pvcreate /dev/loop0 (přidáme do fyzických svazků...)
@@ -61,7 +65,8 @@ Rozšíření skupiny "data" o virtuální disk ze souboru
 #lvextend --size +100M /dev/data/owncloud (rozšíříme logický oddíl, nicméně je stále potřeba zvětšit FS)
 #resize2fs /dev/data/owncloud (v případě ext4 zvětší FS)
 
-
+Vytvoření tisíce souborů:
+#for i in {1..1000}; do touch soubor$i; done
 
 
 
