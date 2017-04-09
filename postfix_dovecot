@@ -1,0 +1,93 @@
+#apt-get install postfix
+  - SMTP naslouchá na portu 25 na všech rozhraní, lze nastavit pomocí FW rule nebo inet_interfaces = localhost
+  
+/var/mail/ (všechna mailová data, /var/spool/mail je symbolický link na ně)
+/var/log/mail.log (logování postfixu)
+
+#postfix status (kontrola konf. souboru)
+
+Odeslání emailu:
+#echo "Test" | mail -s "Testovaci mail" jindra@jindra.spos
+#cat /var/mail/jindra (kontrola zda email dorazil)
+
+  telnet localhost 25
+  HELO jindra.spos
+  MAIL FROM: pepa@jindra.spos
+  RCPT TO: jindra@jindra.spos
+  DATA
+  Subject: Testovaci
+  Ahoj svete
+  .
+  QUIT
+
+Nastavení ukládání mailů z /var/mail a spool (mbox) do ~/Maildir uživatelům
+#postconf -e 'home_mailbox= Maildir/' (každý uživatel má složku s maily v ~/)
+#postconf -e 'mailbox_command = ' (tady by měl být procmail ale není????)
+#service postfix restart
+
+Práce s aliases (lokální přezdívky):
+#newaliases (po upravě /etc/aliases vygeneruje soubor /etc/aliases.db) 
+
+Emailový klient pro procházení mailů, lze použít lokálně ze souboru nebo z POP3 a IMAP
+#apt-get install mutt
+#mutt -f ~/Maildir může se použít i z roota na jiné uživatele)
+
+Lze si také nastavit předdefinovaný soubor pro mutt ~/.muttrc:
+  set mbox_type=Maildir
+  set spoolfile="/home/jindra/Maildir/"
+  set folder="/home/jindra/Maildir/"
+  
+Nastavení virtuálních uživatelů:
+#postconf -e 'virtual_alias_maps= hash:/etc/postfix/virtual' (přidáme cestu k virtuálním uživatelům)
+
+soubor virtual:
+  nick1@example.com user
+  nick2@example.com user
+  
+#postmap /etc/postfix/virtual (aktualizace mapování postfixu)
+#service postfix restart
+
+Implicitně není možné využít relay odesílání odjinud než z localhostu, pokud přidáme:
+  mynetworks = ... 10.0.0.0/24
+  smtpd_recipient_restrictions = permit_mynetworks
+nyní lze i z jiného ip rozsahu využít port 25 na odesílání emailu např na gmail
+
+Virtual Domains??? ty kurvy nefungujou!
+
+### Dovecot POP3 ###
+#apt-get install dovecot-pop3d
+Je potřeba nastavit logování chyb v /etc/dovecot/conf.d/10-logging.conf:
+  log_path = /var/log/dovecot.log
+Defaultně je cesta k datům emailu nastavena na postfix mbox (/var/mail/user - mail_location = mbox:~/mail:INBOX=/var/mail/%u),
+pokud je nastaven na ~/Maildir potom v souboru /etc/dovecot/dovecot.conf je potřeba přidat:
+  mail_location = maildir:~/Maildir
+ 
+Test POP3 služby:
+  telnet localhost 110
+  # https://tools.ietf.org/html/rfc1939
+  USER jindra
+  PASS jindra123
+  LIST
+  RETR 1
+  DELE 1
+  QUIT
+
+Dovecot pro IMAP - sdílí předchozí nastavení z POP3
+#apt-get install dovecot-imapd
+
+telnet localhost 143
+# https://tools.ietf.org/html/rfc3501
+1 LOGIN jindra jindra123
+2 select inbox
+5 FETCH 1 BODY[]
+6 LOGOUT
+
+
+
+
+
+
+
+
+
+
