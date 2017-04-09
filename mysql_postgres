@@ -107,10 +107,53 @@ Zálohování a obnova samotných databází pomocí nástroje mysqldump:
 #mysql < testdb.sql (obnova databáze)
 
 
+### POSTGRES ###
+#apt-get install postgresql-9.4
+Vytvoří Linux uživatele "postgres" (tento účet je zamknutý a nelze se na něj přihlásit heslem, není potřeba mu měnit heslo!), 
+defaultně naslouchá na 127.0.0.1:5432, přihlášení do DB možné pouze v režimu "ident", tedy autentifikace je možná pouze 
+jako přihlášený linuxový uživatel pro kterého existuje stejnojmenná role a název DB
+
+#sudo -i -u postgres (přepnutí na účet pro správu db)
+#createuser --interactive (průvodce pro vytvoření role - tyhle příkazy jsou wrappery pro sql jazyk)
+#createdb user1
+#dropuser user1 (smaže roli)
+SQL> SELECT rolname FROM pg_roles; (zobrazí všechny role v PG)
+#adduser user1 (přidání linuxového uživatele ideálně z roota)
+#sudo -i -u user1 (přepnutí na nového uživatele)
+#psql (uživatel se připojí do databáze "user1")
+SQL> \conninfo (zobrazí informace o připojení)
+
+#psql (přístup do DB - \q = exit)
+\l (zobrazí databáze)
+\c db (připojí do databáze)
+\dt (zobrazí tabulky)
+\d tabulka (sloupečky tabulky)
+
+Abychom se mohli z roota přihlásit jako:
+  #psql -U user1
+musíme nastavit autentifikační pravidla v /etc/postgresql/9.4/main/pg_hba.conf:
+!PRAVIDLA SE VYKONAVAJÍ POSTUPNĚ ODSHORA! po úupravě je potřeba #service postresql restart
+
+TYPE: local - (unixové sockety), host - (TCP/IP připojení, přidává položku ip rozsahu)
+DATABASE: specifikuej pro kterou DB záznam platí / all
+USER: all / specifický uživatel / linux skupina (pro 5 různých uživatelů bude 5 záznamů, nelze dělat čárky)
+ADDRESS: síť platnosti / jedna adresa 10.0.0.55/32
+METHOD: trust - (přihlásí bez hesla jakéhokoli uživatele), reject, md5 - (požaduje md5 heslo, je potřeba přidat přímo v DB!),
+password - (plaintext heslo), ident - (požaduje od OS informace o uživateli - pouze host), 
+peer - (stejné jako ident ale local)
+
+V souboru /etc/postgresql/9.4/main/postgresql.conf je potřeba upravit naslouchání:
+listen_addresses = 'localhost, 10.0.0.5' (* pro všechny)
+
+pg_hba.conf:
+  host    all             all             10.0.0.0/24             md5
 
 
 
 
+
+Vytvoření tabulky, pro id se používá speciální typ SERIAL - auto inkrementuje
+SQL>create table tabulka(id SERIAL PRIMARY KEY, name VARCHAR(30), email VARCHAR(50), reg_date TIMESTAMP);
 
 
 
