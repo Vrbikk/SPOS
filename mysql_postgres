@@ -148,12 +148,59 @@ listen_addresses = 'localhost, 10.0.0.5' (* pro všechny)
 pg_hba.conf:
   host    all             all             10.0.0.0/24             md5
 
+umožní připojení ze sítě pro uživatele co mají heslo např:
+CREATE USER db01 WITH PASSWORD 'pasword';
+CREATE DATABASE db01 WITH OWNER=db01;
+GRANT ALL PRIVILEGES ON DATABASE db01 to db01;
 
+další možností jak přidat heslo k již stávajícímu uživateli "user1" je přihlásit ho jako peer:
+SQL> \password
 
+nebo pomocí uživatele postgres:
+SQL> ALTER USER "user1" WITH PASSWORD 'userpassword';
 
+  host    db02             db01             10.0.0.0/24             md5
+
+#psql -U db01 -h 10.0.0.5 -d db02 (je nutno specifikovat databázi, protože db01 by byla defaultní)
 
 Vytvoření tabulky, pro id se používá speciální typ SERIAL - auto inkrementuje
 SQL>create table tabulka(id SERIAL PRIMARY KEY, name VARCHAR(30), email VARCHAR(50), reg_date TIMESTAMP);
+
+Pro uživatele je potřeba přidat práva na tabulku:
+SQL> GRANT ALL PRIVILEGES ON TABLE tabulka TO user1;
+SQL> GRANT USAGE ON SEQUENCE tabulka_id_seq TO user1; (extra povolení na automatické SERIAL id)
+
+Vkládání:
+SQL> INSERT INTO tabulka (name, email, reg_date) VALUES ('tonik','tondavrba@gmail.com',now());
+
+Hromadné vkládání:
+for i in {1..50}; do echo "INSERT INTO tabulka (name, email, reg_date) VALUES ('$(pwgen 10 1)','$(pwgen 10 1)gmail.com',now());" | psql; done
+
+Pro přístup v PHP je potřeba doinstalovat modul 
+#apt-get install php5-pgsql ; service apache2 restart
+
+a skript:
+<?php
+$dbconn = pg_connect("host=localhost dbname=user1 user=user1 password=hovnopassword")
+     or die('Could not connect: ' . pg_last_error());
+     
+     $query = 'SELECT * FROM tabulka';
+     $result = pg_query($query) or die('Query failed: ' . pg_last_error());
+     // Printing results in HTML
+     echo "<table>\n";
+     while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
+         echo "\t<tr>\n";
+             foreach ($line as $col_value) {
+                     echo "\t\t<td>$col_value</td>\n";
+                         }
+                             echo "\t</tr>\n";
+                             }
+                             echo "</table>\n";
+                             // Free resultset
+             pg_free_result($result);
+             pg_close($dbconn);
+ ?>
+
 
 
 
