@@ -5,10 +5,18 @@ Soubor /etc/exports obsahuje složky ke sdílení:
 
 
 
+Mapování přístupu na jednoho uživatele, všechny zapsané soubory budou pod jedním vlastníkem "anon":
+#useradd -u 6000 anon (přidání uživatele na serveru s uid=6000 a gid=6000) 
+/mnt/hej 10.0.0.0/24(rw,all_squash,anonuid=6000,anongid=6000)
 
-/etc/init.d/nfs-common restart
-/etc/init.d/nfs-kernel-server reload
-/etc/init.d/nfs-kernel-server restart
+po úpravě souboru:
+#exportfs -ra
+#/etc/init.d/nfs-kernel-server reload
+#/etc/init.d/nfs-kernel-server restart
 
 Mounting:
-mount -t nfs 10.0.0.6:/mnt/disk/shares/share1
+#mount -t nfs 10.0.0.6:/mnt/disk/shares/share1 /
+
+Umount (občas nelze normálně odmountovat "device is busy" tak se použije lazy umount):
+#umount -l /root/shares/hej
+
