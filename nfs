@@ -5,7 +5,8 @@ Soubor /etc/exports obsahuje složky ke sdílení:
 
 
 
-Mapování přístupu na jednoho uživatele, všechny zapsané soubory budou pod jedním vlastníkem "anon":
+Mapování přístupu na jednoho uživatele, všechny zapsané soubory od jakéhokoli uživatele (uid, gid) budou pod jedním 
+vlastníkem "anon":
 #useradd -u 6000 anon (přidání uživatele na serveru s uid=6000 a gid=6000) 
 /mnt/hej 10.0.0.0/24(rw,all_squash,anonuid=6000,anongid=6000)
 
