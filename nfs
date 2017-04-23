@@ -1,0 +1,14 @@
+#apt-get install nfs-kernel-server nfs-common (instalace serveru přímo do jádra a podpůrné nástroje)
+
+Soubor /etc/exports obsahuje složky ke sdílení:
+# statická adresa - list adres (subnetů) s dodatečnými parametry
+
+
+
+
+/etc/init.d/nfs-common restart
+/etc/init.d/nfs-kernel-server reload
+/etc/init.d/nfs-kernel-server restart
+
+Mounting:
+mount -t nfs 10.0.0.6:/mnt/disk/shares/share1
