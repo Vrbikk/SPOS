@@ -3,21 +3,31 @@
 Soubor /etc/exports obsahuje složky ke sdílení:
 # statická adresa - list adres (subnetů) s dodatečnými parametry
 
-
-
-Mapování přístupu na jednoho uživatele, všechny zapsané soubory od jakéhokoli uživatele (uid, gid) budou pod jedním 
-vlastníkem "anon":
-#useradd -u 6000 anon (přidání uživatele na serveru s uid=6000 a gid=6000) 
-/mnt/hej 10.0.0.0/24(rw,all_squash,anonuid=6000,anongid=6000)
-
-po úpravě souboru:
+po úpravě souboru /etc/exports:
 #exportfs -ra
 #/etc/init.d/nfs-kernel-server reload
 #/etc/init.d/nfs-kernel-server restart
 
-Mounting:
-#mount -t nfs 10.0.0.6:/mnt/disk/shares/share1 /
+#cut -d: -f1,3,4 /etc/passwd (zobrazí všechny uživatele + uid + gid)
+#useradd -u 6000 anon (přidání uživatele na serveru s uid=6000 a gid=6000) 
 
-Umount (občas nelze normálně odmountovat "device is busy" tak se použije lazy umount):
+Mounting:
+#mount -t nfs 10.0.0.6:/mnt/disk/shares/share1 /folder
+
+Klasický přístup, remote uživatel uid a gid se musí rovnat s tím na serveru:
+/mnt/more 10.0.0.0/24(rw, root_squash)
+
+- pro složku na serveru je třeba udělit chmod 777
+- remote root bude vytvářet soubory jako (nobody|nogroup) kvůli bezpečnosti root_squash (také default)
+
+Vypnutí režimu:
+/mnt/vole 10.0.0.0/24(rw,no_root_squash)
+
+Mapování přístupu na jednoho uživatele, všechny zapsané soubory od jakéhokoli uživatele (uid, gid) budou pod jedním 
+vlastníkem "anon" - ten musí být vytvořen a mít právo do sdílené složky:
+
+/mnt/hej 10.0.0.0/24(rw,all_squash,anonuid=6000,anongid=6000)
+
+Umount (občas nelze normálně NFS odmountovat protože "device is busy" tak se použije lazy umount):
 #umount -l /root/shares/hej
 
