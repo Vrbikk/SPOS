@@ -20,7 +20,7 @@ Klasický přístup, remote uživatel uid a gid se musí rovnat s tím na server
 - pro složku na serveru je třeba udělit chmod 777
 - remote root bude vytvářet soubory jako (nobody|nogroup) kvůli bezpečnosti root_squash (také default)
 
-Vypnutí režimu:
+Vypnutí režimu mapování remote roota:
 /mnt/vole 10.0.0.0/24(rw,no_root_squash)
 
 Mapování přístupu na jednoho uživatele, všechny zapsané soubory od jakéhokoli uživatele (uid, gid) budou pod jedním 
@@ -31,3 +31,4 @@ vlastníkem "anon" - ten musí být vytvořen a mít právo do sdílené složky
 Umount (občas nelze normálně NFS odmountovat protože "device is busy" tak se použije lazy umount):
 #umount -l /root/shares/hej
 
+### SAMBA ###
