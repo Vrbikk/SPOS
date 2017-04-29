@@ -31,4 +31,27 @@ vlastníkem "anon" - ten musí být vytvořen a mít právo do sdílené složky
 Umount (občas nelze normálně NFS odmountovat protože "device is busy" tak se použije lazy umount):
 #umount -l /root/shares/hej
 
+Přidání do /etc/fstab:
+10.0.0.6:/mnt/hej /home/vrbik/hej nfs auto,noatime,nolock,bg,nfsvers=4,intr,tcp,actimeo=1800,nofail 0 0
+
 ### SAMBA ###
+#apt-get install samba smbclient cifs-utils
+#mv /etc/samba/smb.conf /etc/samba/smb.conf.bak (záloha původní konfigurace, založíme nový soubor smb.conf)
+#systemctl restart smbd.service (restart služby po úpravě konfiguračního souboru)
+
+Pro přidání uživatele do samby je potřeba přidat heslo ke stávajícím linux uživatelům:
+#useradd tonik -m (vytvoření uživatele s domovským adresářem)
+#smbpasswd -a tonik (přidání samba hesla k uživateli)
+#pdbedit -w -L (zobrazí Samba uživatele)
+#smbstatus --shares (zobrazí připojené relace na serveru)
+
+
+přidání skupiny a uživatele do ní:
+#addgroup --gid 8888 uzivatele
+#usermod -G uzivatele tonik
+
+
+
+
+
+
