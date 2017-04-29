@@ -43,12 +43,67 @@ Pro přidání uživatele do samby je potřeba přidat heslo ke stávajícím li
 #useradd tonik -m (vytvoření uživatele s domovským adresářem)
 #smbpasswd -a tonik (přidání samba hesla k uživateli)
 #pdbedit -w -L (zobrazí Samba uživatele)
-#smbstatus --shares (zobrazí připojené relace na serveru)
-
 
 přidání skupiny a uživatele do ní:
 #addgroup --gid 8888 uzivatele
 #usermod -G uzivatele tonik
+
+#smbstatus --shares (zobrazí připojené relace na serveru)
+#smbclient -L 10.0.0.6 -U root (pokud má root na server smbpasswd potom toto vypíše všechny dostupné samba složky)
+#smbclient //10.0.0.6/share1 -U tonik (test připojení pomocí samba terminálu z klienta)
+#smbclient //10.0.0.6/share1 -U guest% (připojení jako guest bez hesla, musí být nastavený "guest ok")
+
+Základní nastavení:
+
+server string = Samba Server %v
+netbios name = tester
+security = user
+
+[share1]
+        comment = share1
+        path = /mnt/samba_share
+        browsable = yes
+        writable = yes
+        guest ok = yes
+        create mask = 0600
+        directory mask = 0700
+        
+- guest share umožňuje přihlášení bez hesla
+- security je nastavené na uživatele samby
+
+[share2]
+        path = /mnt/samba_share2
+        valid users = @uzivatele
+        read only = yes
+
+- do valid users lze napsat pouze "tonik" nebo lze specifikovat linux skupinu
+- sdílená složka by měla být #chgrp uzivatele /mnt/samba_share2
+
+[share3]
+        path = /srv/share3
+        valid users = jindra
+
+- simple share pro jednoho uživatele
+
+[anonymous]
+        path = /mnt/anonymous
+        force group = uzivatele
+        create mask = 0660        
+        directory mask = 0771        
+        browsable =yes
+        writable = yes
+        guest ok = yes
+
+- skupina uzivatele bude nastavena všem připojeným klientům, toto se používá pro bezpečnost - restrikce skupiny uzivatele
+
+- na všechny shary jsem dal chmod 777, protože nevim jak jinak
+
+Mountování:
+#apt-get install cifs-utils
+#mount -t cifs -o username=tonik,password=tonik //10.0.0.6/anonymous /mnt/samba
+
+fstab:
+//10.0.0.6/anonymous /mnt/samba cifs username=tonik,password=tonik,iocharset=utf8,nofail 0 0
 
 
 
