@@ -9,7 +9,8 @@ po úpravě souboru /etc/exports:
 #/etc/init.d/nfs-kernel-server restart
 
 #cut -d: -f1,3,4 /etc/passwd (zobrazí všechny uživatele + uid + gid)
-#useradd -u 6000 anon (přidání uživatele na serveru s uid=6000 a gid=6000) 
+#useradd -u 6000 anon (přidání uživatele na serveru s uid=6000 a gid=6000)
+#usermod -g uzivatele user (přidání user do skupiny uzivatele)
 
 Mounting:
 #mount -t nfs 10.0.0.6:/mnt/disk/shares/share1 /folder
@@ -74,16 +75,17 @@ security = user
 [share2]
         path = /mnt/samba_share2
         valid users = @uzivatele
-        read only = yes
+        writeable = yes
 
 - do valid users lze napsat pouze "tonik" nebo lze specifikovat linux skupinu
-- sdílená složka by měla být #chgrp uzivatele /mnt/samba_share2
+- sdílená složka by měla mít práva pro skupinové sdíelní:  d---rws--T root:uzivatele
 
 [share3]
         path = /srv/share3
         valid users = jindra
+        read only = yes
 
-- simple share pro jednoho uživatele
+- simple share pro jednoho uživatele, jen pro čtení
 
 [anonymous]
         path = /mnt/anonymous
