@@ -1,0 +1,33 @@
+Provoz web serveru lze balancovat pomocí stejných DNS A záznamů, sám DNS serve rvrací pořadí podle round robin.
+
+#apt install pound
+
+!! v /etc/default/pound nastavit startup=1
+
+konfigurační soubor je: /etc/pound/pound.cfg
+
+přidáme Apache backendy:
+                BackEnd
+                        Address 192.168.10.1
+                        Port    80
+                End
+                BackEnd
+                        Address 192.168.10.2
+                        Port    80
+                End
+
+!! pound nesmí běžet na stejném portu jako apache
+#netstat -tupln
+
+Apache backendy v jednom souboru se vážou na extra ip adresy, není tak nutné dávat ServerName:
+
+<VirtualHost 192.168.10.1:80>
+    DocumentRoot "/var/www/www1"
+</VirtualHost>
+<VirtualHost 192.168.10.2:80>
+    DocumentRoot "/var/www/www2"
+</VirtualHost>                               
+
+
+/etc/init.d/pound start
+/etc/init.d/pound stop
