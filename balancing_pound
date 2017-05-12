@@ -16,10 +16,12 @@ přidáme Apache backendy:
                         Port    80
                 End
 
-!! pound nesmí běžet na stejném portu jako apache
-#netstat -tupln
+!! pound nesmí běžet na stejném portu jako apache #netstat -tupln
+změna portu pro Apache: /etc/apache2/ports.conf
 
 Apache backendy v jednom souboru se vážou na extra ip adresy, není tak nutné dávat ServerName:
+
+#ip addr add 192.168.10.1/24 dev eth0 (přidání virtuální adresy)
 
 <VirtualHost 192.168.10.1:80>
     DocumentRoot "/var/www/www1"
@@ -28,6 +30,19 @@ Apache backendy v jednom souboru se vážou na extra ip adresy, není tak nutné
     DocumentRoot "/var/www/www2"
 </VirtualHost>                               
 
-
 /etc/init.d/pound start
 /etc/init.d/pound stop
+
+zkouška balancingu:
+#curl 127.0.0.1:8888 (měl by se střídat obsah v /var/www/www1 a /var/www/www2)
+
+k backendům lze přidat atribut Priority pokud je nějaký server výkonnější něž druhý
+#service pound restart
+
+                      BackEnd
+                      Address 192.168.1.20
+                      Port    80
+                      Priority 5
+                      End
+
+
