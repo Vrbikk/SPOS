@@ -35,26 +35,27 @@ po každé úpravě je dobré zvýšit Serial
 -------
 
 $TTL    604800
-@       IN      SOA     spos-avrba.spos. admin.spos-avrba.spos (
+@       IN      SOA     spos-avrba.spos. admin.spos-avrba.spos. (
                               2         ; Serial
                          604800         ; Refresh
                           86400         ; Retry
                         2419200         ; Expire
                          604800 )       ; Negative Cache TTL
-;
-
+                         
 @       IN      NS      localhost.
 @       IN      A       147.228.67.xx 
 
 debian2 IN      A       147.228.67.xx
-synology        IN      A       147.228.67.yy
 gw      IN      A      147.228.67.zz
-
-;alias pro webový server, který běží na stejném železe
 www     IN      CNAME   debian2
+mail    IN      A       147.228.67.xx 
+@       IN      MX      10      mail
+@         IN      MX           20   mail.lubos.spos.
+
+; security TXT http://www.spfwizard.net/
+spos-test.spos.  IN TXT "v=spf1 mx a ptr"
 
 ----------
-host zcu.cz
 
 Reverzní záznam, je potřeba přidat další zónu:
 
@@ -90,8 +91,9 @@ Pro kontrolu konfigurace bind:
 #service bind9 restart
 
 Testy DNS serveru:
-
-dig -x 192.168.255.55 (test reverzní zóny PTR - záznam, musíme dostat ANSWER=1)
+#tail -n 30 /var/log/syslog
+#dig -x 192.168.255.55 (test reverzní zóny PTR - záznam, musíme dostat ANSWER=1)
+#host -t TXT avrba.spos-test.spos
 
 
 
