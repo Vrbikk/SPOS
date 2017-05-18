@@ -26,9 +26,13 @@ zone "spos-fjani.spos"{
 
 Vytvoříme složku "/zones" a "/slaves", do zones nakopírujeme:
 #mkdir /etc/bind/zones ; mkdir /etc/bind/slaves ; cp /etc/bind/db.local  /etc/bind/zones/db.spos-name.spos
-#chown -R bind /etc/bind/slaves
+#chown -R bind /etc/bind/slaves (aby do ní mohl dávat slavy)
 
 Editujeme "/etc/bind/zones/db.spos-name.spos":
+@ je nahrazováno proměnnou $ORIGIN = název zóny
+po každé úpravě je dobré zvýšit Serial
+
+-------
 
 $TTL    604800
 @       IN      SOA     spos-avrba.spos. admin.spos-avrba.spos (
@@ -40,8 +44,7 @@ $TTL    604800
 ;
 
 @       IN      NS      localhost.
-@       IN      A       147.228.67.xx
-@       IN      AAAA    ::1
+@       IN      A       147.228.67.xx 
 
 debian2 IN      A       147.228.67.xx
 synology        IN      A       147.228.67.yy
@@ -50,9 +53,52 @@ gw      IN      A      147.228.67.zz
 ;alias pro webový server, který běží na stejném železe
 www     IN      CNAME   debian2
 
+----------
+host zcu.cz
+
+Reverzní záznam, je potřeba přidat další zónu:
+
+zone "255.168.192.in-addr.arpa" IN {
+        type master;
+        file "/etc/bind/local/db.ns1.spos-test.spos";
+        allow-update { none; };
+};
+
+-------------
+
+$ORIGIN 255.168.192.in-addr.arpa.
+$TTL    604800
+@       IN      SOA     ns1.spos-test.spos. admin.spos-test.spos. (
+                             45         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+
+        IN      NS      ns1.spos-test.spos.
+
+55      IN      PTR     avrba.spos-test.spos.
+
+------
+
+
+
+
+
 Pro kontrolu konfigurace bind:
 #named-checkconf (pokud nevrátí žádný výstup je konfigurace validní)
 #service bind9 restart
+
+Testy DNS serveru:
+
+dig -x 192.168.255.55 (test reverzní zóny PTR - záznam, musíme dostat ANSWER=1)
+
+
+
+
+
+
+
 
 Po přidání virtuální adresy např 192.168.0.xx lze udělat privátní a veřejný pohled, v "/etc/bind/named.conf.local" definujeme
 dva access listy:
