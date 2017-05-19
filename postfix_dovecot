@@ -1,10 +1,12 @@
 #apt-get install postfix
-  - SMTP naslouchá na portu 25 na všech rozhraní, lze nastavit pomocí FW rule nebo inet_interfaces = localhost
+  - SMTP naslouchá na portu 25 na všech rozhraní, lze nastavit pomocí FW rule nebo v /etc/postfix/main.cf:
+  
+  inet_interfaces = localhost
   
 /var/mail/ (všechna mailová data, /var/spool/mail je symbolický link na ně)
 /var/log/mail.log (logování postfixu)
 
-#postfix status (kontrola konf. souboru)
+#postfix status (!kontrola konf. souboru)
 
 Odeslání emailu:
 #echo "Test" | mail -s "Testovaci mail" jindra@jindra.spos
@@ -25,6 +27,9 @@ Nastavení ukládání mailů z /var/mail a spool (mbox) do ~/Maildir uživatel�
 #postconf -e 'mailbox_command = ' (tady by měl být procmail ale není????)
 #service postfix restart
 
+Je potřeba nastavit /etc/mailname na doménové jméno a také poté přidáme $myorigin:
+mydestination = $myhostname, spos-avrba.spos, localhost.localdomain, localhost, spos-test.spos, $myorigin
+
 Práce s aliases (lokální přezdívky):
 #newaliases (po upravě /etc/aliases vygeneruje soubor /etc/aliases.db) 
 
@@ -36,11 +41,14 @@ Lze si také nastavit předdefinovaný soubor pro mutt ~/.muttrc:
   set mbox_type=Maildir
   set spoolfile="/home/jindra/Maildir/"
   set folder="/home/jindra/Maildir/"
-  
+
+Virtuální domény:
+virtual_alias_domains = avrba1.spos-test.spos, avrba2.spos-test.spos
+
 Nastavení virtuálních uživatelů:
 #postconf -e 'virtual_alias_maps= hash:/etc/postfix/virtual' (přidáme cestu k virtuálním uživatelům)
 
-soubor virtual:
+soubor virtual (lze zde použít i virtuální domény):
   nick1@example.com user
   nick2@example.com user
   
