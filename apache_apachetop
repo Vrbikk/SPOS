@@ -48,6 +48,8 @@ Vytvoříme nový VH "secure.conf" s přidanými cestami k certifikátu:
     CustomLog /var/log/apache2/secure-access.log common
 </VirtualHost>
 
+Soubor /etc/apache2/ports.conf, lze do něj zapsat naslouchající ip adresy a porty
+Listen 192.168.255.55:8888 (dovoluje virtuálům naslouchat na konkrténí adrese a portu)
 
 Instalace a použití apachetop:
 #apt install apachetop
