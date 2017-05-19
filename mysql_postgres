@@ -29,7 +29,8 @@ mysql> show tables;
 mysql> desc table; 
 mysql> create database if not exists testdb DEFAULT CHARACTER SET utf8  DEFAULT COLLATE utf8_general_ci; 
 mysql> drop database if exists testdb; 
-mysql> create table tabulka(id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(30), email VARCHAR(50), reg_date TIMESTAMP);
+mysql> create table tabulka(id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+name VARCHAR(30), email VARCHAR(50), reg_date TIMESTAMP);
 mysql> drop table tabulka;
 
 Práce s daty:
@@ -132,7 +133,7 @@ SQL> \conninfo (zobrazí informace o připojení)
 Abychom se mohli z roota přihlásit jako:
   #psql -U user1
 musíme nastavit autentifikační pravidla v /etc/postgresql/9.4/main/pg_hba.conf:
-!PRAVIDLA SE VYKONAVAJÍ POSTUPNĚ ODSHORA! po úupravě je potřeba #service postresql restart
+!PRAVIDLA SE VYKONAVAJÍ POSTUPNĚ ODSHORA! po úpravě je potřeba #service postresql restart
 
 TYPE: local - (unixové sockety), host - (TCP/IP připojení, přidává položku ip rozsahu)
 DATABASE: specifikuej pro kterou DB záznam platí / all
@@ -145,7 +146,7 @@ peer - (stejné jako ident ale local)
 V souboru /etc/postgresql/9.4/main/postgresql.conf je potřeba upravit naslouchání:
 listen_addresses = 'localhost, 10.0.0.5' (* pro všechny)
 
-pg_hba.conf:
+Soubor pg_hba.conf:
   host    all             all             10.0.0.0/24             md5
 
 umožní připojení ze sítě pro uživatele co mají heslo např:
@@ -166,15 +167,16 @@ SQL> ALTER USER "user1" WITH PASSWORD 'userpassword';
 Vytvoření tabulky, pro id se používá speciální typ SERIAL - auto inkrementuje
 SQL>create table tabulka(id SERIAL PRIMARY KEY, name VARCHAR(30), email VARCHAR(50), reg_date TIMESTAMP);
 
-Pro uživatele je potřeba přidat práva na tabulku:
+Pro uživatele je potřeba přidat práva na DB + tabulku:
+SQL> GRANT CONNECT ON DATABASE dbname TO username;
 SQL> GRANT ALL PRIVILEGES ON TABLE tabulka TO user1;
 SQL> GRANT USAGE ON SEQUENCE tabulka_id_seq TO user1; (extra povolení na automatické SERIAL id)
 
 Vkládání:
 SQL> INSERT INTO tabulka (name, email, reg_date) VALUES ('tonik','tondavrba@gmail.com',now());
 
-Hromadné vkládání:
-for i in {1..50}; do echo "INSERT INTO tabulka (name, email, reg_date) VALUES ('$(pwgen 10 1)','$(pwgen 10 1)gmail.com',now());" | psql; done
+Hromadné vkládání, je potřeba z uživatele postgres:
+for i in {1..50}; do echo "INSERT INTO tabulka (name, email, reg_date) VALUES ('$(pwgen 10 1)','$(pwgen 10 1)gmail.com',now());" | psql -d databaze; done
 
 Pro přístup v PHP je potřeba doinstalovat modul 
 #apt-get install php5-pgsql ; service apache2 restart
@@ -201,7 +203,10 @@ $dbconn = pg_connect("host=localhost dbname=user1 user=user1 password=hovnopassw
              pg_close($dbconn);
  ?>
 
-
+Zálohování (za uživatele postgres s přístupem peer):
+#pg_dump dbname > outfile
+Obnova:
+#psql dbname < infile
 
 
 
