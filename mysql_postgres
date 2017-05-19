@@ -44,7 +44,7 @@ Plnění dat cyklem:
 
 Přidání uživatele a jeho práv:
 mysql> CREATE USER 'user'@'localhost' IDENTIFIED BY 'userpassword';
-mysql> GRANT ALL PRIVILEGES ON testdb.* TO 'user'@'localhost'; (GRANT SELECT - ro)
+mysql> GRANT ALL PRIVILEGES ON testdb.* TO 'user'@'localhost'; (GRANT SELECT ON - ro)
 mysql> REVOKE ALL PRIVILEGES ON testdb.* FROM 'user'@'localhost'; (odebrání práv)
 mysql> FLUSH PRIVILEGES;
 mysql> DROP USER 'user'@'localhost'; (smazání uživatele)
