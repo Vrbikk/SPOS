@@ -33,7 +33,7 @@ Odebereme nutnost zadat klíč při rebootování apache:
 Vytvoříme nový VH "secure.conf" s přidanými cestami k certifikátu:
 <VirtualHost *:80>
     ServerName secure.spos-name.spos
-    Redirect permanent / https://secure.spos-name.spos/
+    Redirect / https://secure.spos-name.spos/
 </VirtualHost>
 
 <VirtualHost *:443>
