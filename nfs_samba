@@ -17,6 +17,9 @@ Mounting:
 Klasický přístup, remote uživatel uid a gid se musí rovnat s tím na serveru:
 /mnt/more 10.0.0.0/24(rw, root_squash)
 
+Pro jeden share lze definovat více přístupů z adres:
+/usr/local   192.168.0.1(ro) 192.168.0.2(rw)
+
 - pro složku na serveru je třeba udělit chmod 777
 - remote root bude vytvářet soubory jako (nobody|nogroup) kvůli bezpečnosti root_squash (také default)
 
@@ -37,8 +40,8 @@ Přidání do /etc/fstab:
 ### SAMBA ###
 #apt-get install samba smbclient cifs-utils
 #mv /etc/samba/smb.conf /etc/samba/smb.conf.bak (záloha původní konfigurace, založíme nový soubor smb.conf)
-#systemctl restart smbd.service (restart služby po úpravě konfiguračního souboru)
-
+#systemctl restart smbd.service (restart služby po úpravě konfiguračního souboru) | #service smbd restart
+#
 Pro přidání uživatele do samby je potřeba přidat heslo ke stávajícím linux uživatelům:
 #useradd tonik -m (vytvoření uživatele s domovským adresářem)
 #smbpasswd -a tonik (přidání samba hesla k uživateli)
@@ -77,7 +80,7 @@ security = user
         writeable = yes
 
 - do valid users lze napsat pouze "tonik" nebo lze specifikovat linux skupinu
-- sdílená složka by měla mít práva pro skupinové sdíelní:  d---rws--T root:uzivatele
+- sdílená složka by měla mít práva pro skupinové sdílení:  d---rws--T root:uzivatele
 
 [share3]
         path = /srv/share3
@@ -106,11 +109,15 @@ Mountování:
 fstab:
 //10.0.0.6/anonymous /mnt/samba cifs username=tonik,password=tonik,iocharset=utf8,nofail 0 0
 
+Testování funkčnosti sharu (put "soubor" ze složky kde se spustí:):
+#smbclient //192.168.255.55/shared1 -U smbshare
+
+
 WINDOWS SERVER samba a nasdílet do linuxu:
 PWRsh> net user /add tonik * ( + sdílení naklikat ve složce -> properties)
 
-smbclient -L 10.0.0.7 -U administrator (kontrola sharů)
-mount -t cifs //10.0.0.7/c ~/winshare_cfs -o username=tonik
+#smbclient -L 10.0.0.7 -U administrator (kontrola sharů)
+#mount -t cifs //10.0.0.7/c ~/winshare_cfs -o username=tonik
 
 
 
