@@ -69,7 +69,9 @@ Je potřeba nastavit logování chyb v /etc/dovecot/conf.d/10-logging.conf:
 Defaultně je cesta k datům emailu nastavena na postfix mbox (/var/mail/user - mail_location = mbox:~/mail:INBOX=/var/mail/%u),
 pokud je nastaven na ~/Maildir potom v souboru /etc/dovecot/dovecot.conf je potřeba přidat:
   mail_location = maildir:~/Maildir
- 
+
+#service dovecot restart
+
 Test POP3 služby:
   telnet localhost 110
   # https://tools.ietf.org/html/rfc1939
@@ -80,7 +82,7 @@ Test POP3 služby:
   DELE 1
   QUIT
 
-Dovecot pro IMAP - sdílí předchozí nastavení z POP3
+Dovecot pro IMAP - !!sdílí předchozí nastavení z POP3
 #apt-get install dovecot-imapd
 
 telnet localhost 143
