@@ -133,7 +133,7 @@ SQL> \conninfo (zobrazí informace o připojení)
 Abychom se mohli z roota přihlásit jako:
   #psql -U user1
 musíme nastavit autentifikační pravidla v /etc/postgresql/9.4/main/pg_hba.conf:
-!PRAVIDLA SE VYKONAVAJÍ POSTUPNĚ ODSHORA! po úpravě je potřeba #service postresql restart
+!PRAVIDLA SE VYKONAVAJÍ POSTUPNĚ ODSHORA! po úpravě je potřeba #/etc/init.d/postgresql restart
 
 TYPE: local - (unixové sockety), host - (TCP/IP připojení, přidává položku ip rozsahu)
 DATABASE: specifikuej pro kterou DB záznam platí / all
@@ -205,6 +205,28 @@ $dbconn = pg_connect("host=localhost dbname=user1 user=user1 password=hovnopassw
 
 Zálohování (za uživatele postgres s přístupem peer):
 #pg_dump dbname > outfile
+
+Zálohování za uživatele root (je potřeba dát do /etc/postgresql/9.4/main/pg_hba.conf):
+local   all             root                                    peer
+
+Přihlašování bez DB root se musí provádět jako #psql -d postgres
+Script pro zálohování jednotlivých DB do jednotlivých souborů:
+
+#!/bin/bash
+
+#list databases
+psql -d postgres -A -c "SELECT datname FROM pg_database" | head -n -1 > databases
+
+rm -rf database_backup
+mkdir database_backup
+
+list=$(cat databases)
+
+while read -r line; do
+        pg_dump $line > database_backup/$line
+done <<< "$list"
+
+
 Obnova:
 #psql dbname < infile
 
