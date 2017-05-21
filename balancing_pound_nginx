@@ -46,3 +46,39 @@ k backendům lze přidat atribut Priority pokud je nějaký server výkonnějš�
                       End
 
 
+### NGINX ###
+#apt-get install nginx
+
+/etc/nginx/sites-avaible/default (lze i "listen *:80;"):
+----
+
+upstream backend  {
+        server 192.168.200.55:8888 max_fails=2 fail_timeout=5s;
+        server 192.168.100.55:8080 max_fails=2 fail_timeout=5s;
+}
+upstream img_backend{
+        server 192.168.200.55:8888 max_fails=2 fail_timeout=5s;
+}
+
+server {
+        listen 192.168.253.55:8888;
+
+        server_name _;
+
+        location / {
+                proxy_pass http://backend;
+        }
+
+        location /img {
+                proxy_pass http://192.168.200.55:8888/img;
+        }
+
+}
+
+konfigurace, která střída 2 apache servery, pokud /img tak je vše bráno ze serveru 1
+
+
+
+
+
+
