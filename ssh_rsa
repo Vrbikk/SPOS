@@ -33,6 +33,7 @@ iface eth0 inet static
        post-up /sbin/iptables-restore /etc/network/iptables.conf
 
 Každou úpravu ve firewallu je poté možné napsat do /etc/network/iptables.conf a restartovat síť
+smazání pravidla se dělá místo -A se dá -D, nebo iptables --flush
 
 Vygenerování RSA 2048 klíče k přístupu na SSH bez hesla (vygenerujeme na klientské straně):
 #ssh-keygen -t rsa
