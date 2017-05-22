@@ -97,7 +97,7 @@ Zálohování databáze (VYPNUTÝ STAV) - co složka to databáze:
 rsync -rav /var/lib/mysql/ /backup/zaloha-mysql/
 
 Použití nástroje mysqladmin (předpokládá vytvořený soubor ~/.my.cnf):
-#mysqladmin -u root -p123456 password 'xyz123' (změna hesla roota)
+#mysqladmin -u root -p123456 password 'xyz123' (změna hesla roota, 123456 je staré heslo)
 #mysqladmin ping (zda běží)
 #mysqladmin status
 #mysqladmin processlist
