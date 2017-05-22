@@ -48,6 +48,10 @@ a tam dáme obsah id_rsa.pub
 
 ssh -i id_rsa root@ip
 
+Nastavení pouze certifkátového přihlášení(/etc/ssh/sshd_config):
+PasswordAuthentication no
+#service sshd restart
+
 
 
 
