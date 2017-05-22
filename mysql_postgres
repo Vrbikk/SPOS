@@ -106,6 +106,9 @@ Zálohování a obnova samotných databází pomocí nástroje mysqldump:
 #mysqldump --databases testdb > testdb.sql (jedna databáze)
 #mysqldump --all-databases > dump.sql (vše)
 #mysql < testdb.sql (obnova databáze)
+--když není ~/.my.cnf
+#mysqldump -u root -p"spos.\";" --all-databases > /mnt/db.dump
+
 
 
 ### POSTGRES ###
