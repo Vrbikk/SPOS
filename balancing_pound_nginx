@@ -56,9 +56,6 @@ upstream backend  {
         server 192.168.200.55:8888 max_fails=2 fail_timeout=5s;
         server 192.168.100.55:8080 max_fails=2 fail_timeout=5s;
 }
-upstream img_backend{
-        server 192.168.200.55:8888 max_fails=2 fail_timeout=5s;
-}
 
 server {
         listen 192.168.253.55:8888;
