@@ -56,6 +56,10 @@ Vytvoření LVM nad md1:
 #mount /dev/data/owncloud /mnt/owncloud/
 #lvs (vypíše volume groups)
 
+Formátování XFS
+#apt-get install xfsprogs
+#mkfs.xfs /dev/data/owncloud
+
 Rozšíření skupiny "data" o virtuální disk ze souboru
 #fallocate -l 1024M virt0.img ; dd if=/dev/zero of=virt0.img bs=1M count=1024 (vytvoříme prázdný soubor)
 #losetup /dev/loop0 virt0.img (nalinkujeme soubor jako blokové zařízení)
@@ -63,7 +67,7 @@ Rozšíření skupiny "data" o virtuální disk ze souboru
 #pvcreate /dev/loop0 (přidáme do fyzických svazků...)
 #vgextend data /dev/loop0 (rozšíříme skupinu "data", nyní je možno přidělit LV další 1GB prostoru viz #vgdisplay)
 #lvextend --size +100M /dev/data/owncloud (rozšíříme logický oddíl, nicméně je stále potřeba zvětšit FS)
-#resize2fs /dev/data/owncloud (v případě ext4 zvětší FS)
+#resize2fs /dev/data/owncloud (v případě ext4 zvětší FS) | #xfs_growfs /dev/data/owncloud
 
 Vytvoření tisíce souborů:
 #for i in {1..1000}; do touch soubor$i; done
