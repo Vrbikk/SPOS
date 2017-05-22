@@ -6,11 +6,10 @@ MariaDB naslouchá na 127.0.0.1:3306, nikoli na localhostu
 Přihlásit do databáze "mysql" z 127.0.0.1 jako root lze takto (zvolení databáze není povinné):
 #mysql -u root -p -h 127.0.0.1 mysql
 
-Změna portu a rozhraní naslouchání v souboru /etc/mysql/my.cnf v sekci [mysqld]:
-bind-address=0.0.0.0 (naslouchá na všech rozhraních - jednotlivá pravidla se pak nastavují pomocí GRANT v mysql)
+Změna portu a rozhraní naslouchání v souboru /etc/mysql/my.cnf v sekci [mysqld + client]:
+bind-address=0.0.0.0 (naslouchá na všech rozhraních - jednotlivá pravidla se pak nastavují pomocí GRANT v mysql
+a iptables)
 #service mysql restart;
-V případě změny portu je potřeba se připojovat navíc s: "-P port" a v php.ini nastavit defaultní port pro mysqli
-
 
 Pro automatické přihlašování můžeme vyzvořit soubor ~/.my.cnf:
 [client]
