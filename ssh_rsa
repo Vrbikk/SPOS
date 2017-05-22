@@ -1,5 +1,8 @@
 Nastavení statické ip adresy:
 
+Nastavení hostname /etc/hostname
+reboot
+
 /etc/network/interfaces
 ##The primary network interface
 ##iface eth0 inet dhcp
@@ -26,15 +29,8 @@ iptables -A INPUT -p tcp -m tcp --dport 22 -j DROP (zakáže vše ostatní)
 Po restartu se ovšem pravidla smažou, je potřeba je uložit a upravit /etc/network/interfaces + script:
 #iptables-save > /etc/network/iptables.conf
 
-
-#!/bin/bash
-#script pro načtení pravidel
-iptables-restore < /etc/network/iptables.conf
-
-#chmod u+x /etc/network/post-up-script.sh 
-
 iface eth0 inet static 
-       post-up /etc/network/post-up-script.sh
+       post-up /sbin/iptables-restore /etc/network/iptables.conf
 
 Každou úpravu ve firewallu je poté možné napsat do /etc/network/iptables.conf a restartovat síť
 
@@ -43,4 +39,16 @@ Vygenerování RSA 2048 klíče k přístupu na SSH bez hesla (vygenerujeme na k
 $HOME/.ssh/id_rsa (privátní klíč)
 $HOME/.ssh/id_rsa.pub (veřejný klíč)
 #ssh-copy-id root@server.domain (automatické přidání veřejného klíče na server d osouboru ~/.ssh/authorized_keys)
+
+Pokud klíč generujeme do zvláštní složky potom:
+ssh-copy-id -i id_rsa.pub root@178.255.170.247 -p 10055
+
+Pokud ručně tak na serveru vytvočíme /root/.ssh/authorized_keys
+a tam dáme obsah id_rsa.pub
+
+ssh -i id_rsa root@ip
+
+
+
+
 
