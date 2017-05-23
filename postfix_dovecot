@@ -35,12 +35,9 @@ Práce s aliases (lokální přezdívky):
 
 Emailový klient pro procházení mailů, lze použít lokálně ze souboru nebo z POP3 a IMAP
 #apt-get install mutt
-#mutt -f ~/Maildir může se použít i z roota na jiné uživatele)
-
-Lze si také nastavit předdefinovaný soubor pro mutt ~/.muttrc:
-  set mbox_type=Maildir
-  set spoolfile="/home/jindra/Maildir/"
-  set folder="/home/jindra/Maildir/"
+#mutt -f ~/Maildir (může se použít i z roota na jiné uživatele)
+#mutt -f /var/spool/mail/jindra
+#mutt -f imap://user1:heslo@localhost:143/ (nutné nainstalovat dovecot-imapd)
 
 Virtuální domény:
 virtual_alias_domains = avrba1.spos-test.spos, avrba2.spos-test.spos
@@ -59,8 +56,6 @@ Implicitně není možné využít relay odesílání odjinud než z localhostu,
   mynetworks = ... 10.0.0.0/24
   smtpd_recipient_restrictions = permit_mynetworks
 nyní lze i z jiného ip rozsahu využít port 25 na odesílání emailu např na gmail
-
-Virtual Domains??? ty kurvy nefungujou!
 
 ### Dovecot POP3 ###
 #apt-get install dovecot-pop3d
