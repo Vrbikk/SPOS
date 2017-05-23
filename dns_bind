@@ -1,8 +1,15 @@
 /etc/hostname - název serveru ("spos-name")
-/etc/resolv.conf - seznam DNS serverů (127.0.0.1)
 /etc/hosts - musí kromě localhostu obsahovat "147.228.67.xx spos-name.spos spos-name"
 #host -t ANY zcu.cz (všechny záznamy o doméně zcu.cz)
 #apt-get install bind9 dnsutils
+
+Nastavíme /etc/resolv.conf:
+#loalni server
+nameserver 127.0.0.1
+#vsechno ostatní
+nameserver 8.8.8.8
+
+nebo:
 
 Do "/etc/bind/named.conf.options" přidáme servery pro ostatní resolvy:
 forwarders {
@@ -20,7 +27,7 @@ zone "spos-name.spos"{
 
 zone "spos-fjani.spos"{
         type slave;
-        file "/etc/bind/slaves/db.spos-name2.spos";
+        file "/etc/bind/zones/db.spos-name2.spos";
         masters {147.228.67.xx2;};
 };
 
@@ -46,11 +53,12 @@ $TTL    604800
 @       IN      A       147.228.67.xx 
 
 debian2 IN      A       147.228.67.xx
-gw      IN      A      147.228.67.zz
 www     IN      CNAME   debian2
 mail    IN      A       147.228.67.xx 
 @       IN      MX      10      mail
-@         IN      MX           20   mail.lubos.spos.
+@       IN      MX      20      mail.lubos.spos.
+;pokud chceme mit MX zaznamy pro "mail.spos-avrba.spos"
+mail       IN      MX      20      mail
 
 ; security TXT http://www.spfwizard.net/
 spos-test.spos.  IN TXT "v=spf1 mx a ptr"
