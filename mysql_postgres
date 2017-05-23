@@ -9,6 +9,10 @@ Přihlásit do databáze "mysql" z 127.0.0.1 jako root lze takto (zvolení datab
 Změna portu a rozhraní naslouchání v souboru /etc/mysql/my.cnf v sekci [mysqld + client]:
 bind-address=0.0.0.0 (naslouchá na všech rozhraních - jednotlivá pravidla se pak nastavují pomocí GRANT v mysql
 a iptables)
+
+Pokud databázi nastavíme na bind-address=10.0.0.4, tak ještě naslouchá na socketu localhostu a připojíme se tak: 
+#mysql -u root -p (bez zadání hosta)
+
 #service mysql restart;
 
 Pro automatické přihlašování můžeme vyzvořit soubor ~/.my.cnf:
@@ -20,6 +24,7 @@ database=mysql
 
 Pak již stačí:
 #mysql
+nebo: #mysql -u spos -pahoj -D spos -h 10.0.0.4
 
 Operace s DB a tabulkama:
 mysql> show databases; 
