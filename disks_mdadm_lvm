@@ -72,9 +72,11 @@ Rozšíření skupiny "data" o virtuální disk ze souboru
 Vytvoření tisíce souborů:
 #for i in {1..1000}; do touch soubor$i; done
 
+Nastavení labelů (kvůli fstab):
+e2label /dev/device data
 
-
-
+Umísění do /etc/fstab:
+LABEL=data /home/ss ext4 defaults 0 0
 
 
 
