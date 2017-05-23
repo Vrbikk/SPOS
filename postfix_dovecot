@@ -45,7 +45,7 @@ virtual_alias_domains = avrba1.spos-test.spos, avrba2.spos-test.spos
 Nastavení virtuálních uživatelů:
 #postconf -e 'virtual_alias_maps= hash:/etc/postfix/virtual' (přidáme cestu k virtuálním uživatelům)
 
-soubor virtual (lze zde použít i virtuální domény):
+soubor virtual, uživatele je třeba vytvořit #adduser user:
   nick1@example.com user
   nick2@example.com user
   
@@ -61,9 +61,10 @@ nyní lze i z jiného ip rozsahu využít port 25 na odesílání emailu např n
 #apt-get install dovecot-pop3d
 Je potřeba nastavit logování chyb v /etc/dovecot/conf.d/10-logging.conf:
   log_path = /var/log/dovecot.log
-Defaultně je cesta k datům emailu nastavena na postfix mbox (/var/mail/user - mail_location = mbox:~/mail:INBOX=/var/mail/%u),
-pokud je nastaven na ~/Maildir potom v souboru /etc/dovecot/dovecot.conf je potřeba přidat:
-  mail_location = maildir:~/Maildir
+
+Nastavení umístění složky s maily /etc/dovecot/conf.d/10-mail.conf (první je defaultní)
+mail_location = mbox:~/mail:INBOX=/var/mail/%u
+mail_location = maildir:~/Maildir
 
 #service dovecot restart
 
