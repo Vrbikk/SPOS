@@ -216,15 +216,14 @@ Zálohování (za uživatele postgres s přístupem peer):
 #pg_dump dbname > outfile
 
 Zálohování za uživatele root (je potřeba dát do /etc/postgresql/9.4/main/pg_hba.conf):
-local   all             root                                    peer
-
+local all postgres trust
 Přihlašování bez DB root se musí provádět jako #psql -d postgres
 Script pro zálohování jednotlivých DB do jednotlivých souborů:
 
 #!/bin/bash
 
 #list databases
-psql -d postgres -A -c "SELECT datname FROM pg_database" | head -n -1 > databases
+psql -U postgres -d postgres -A -c "SELECT datname FROM pg_database" | head -n -1 > databases
 
 rm -rf database_backup
 mkdir database_backup
