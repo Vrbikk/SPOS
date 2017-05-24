@@ -239,6 +239,9 @@ Obnova:
 #psql dbname < infile
 
 
+Testování host připojení s jiným portem:
+psql -U filek -d spos -h 10.0.0.170 -p 5433
+
 
 
 
