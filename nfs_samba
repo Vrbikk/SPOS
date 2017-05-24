@@ -8,8 +8,11 @@ po úpravě souboru /etc/exports:
 #/etc/init.d/nfs-kernel-server reload
 #/etc/init.d/nfs-kernel-server restart
 
+#rpcinfo -p (běžící rpc služby)
+
 #cut -d: -f1,3,4 /etc/passwd (zobrazí všechny uživatele + uid + gid)
 #useradd -u 6000 anon (přidání uživatele na serveru s uid=6000 a gid=6000)
+#chmod 770 na složku, kterou squashujeme od uživatele anon
 
 Mounting:
 #mount -t nfs 10.0.0.6:/mnt/disk/shares/share1 /folder
