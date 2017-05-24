@@ -113,13 +113,15 @@ Zálohování a obnova samotných databází pomocí nástroje mysqldump:
 --když není ~/.my.cnf
 #mysqldump -u root -p"spos.\";" --all-databases > /mnt/db.dump
 
-
-
 ### POSTGRES ###
-#apt-get install postgresql-9.4
+#apt install postgresql
 Vytvoří Linux uživatele "postgres" (tento účet je zamknutý a nelze se na něj přihlásit heslem, není potřeba mu měnit heslo!), 
 defaultně naslouchá na 127.0.0.1:5432, přihlášení do DB možné pouze v režimu "ident", tedy autentifikace je možná pouze 
 jako přihlášený linuxový uživatel pro kterého existuje stejnojmenná role a název DB
+
+Změna portu (/etc/postgresql/main/9.4/postgresl.conf)
+listen_addresses = 'localhost, 10.0.0.170'
+port = 5433  
 
 #sudo -i -u postgres (přepnutí na účet pro správu db)
 #createuser --interactive (průvodce pro vytvoření role - tyhle příkazy jsou wrappery pro sql jazyk)
@@ -190,7 +192,7 @@ Pro přístup v PHP je potřeba doinstalovat modul
 
 a skript:
 <?php
-$dbconn = pg_connect("host=localhost dbname=user1 user=user1 password=hovnopassword")
+$dbconn = pg_connect("host=localhost port=5432 dbname=user1 user=user1 password=hovnopassword")
      or die('Could not connect: ' . pg_last_error());
      
      $query = 'SELECT * FROM tabulka';
